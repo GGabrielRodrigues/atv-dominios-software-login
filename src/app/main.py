@@ -2,6 +2,8 @@ import sqlite3
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.database import get_db, initialize_database
 from app.schemas import LoginRequest, LoginResponse
@@ -9,6 +11,14 @@ from app.security import authenticate_user
 
 
 app = FastAPI(title="Login API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+) #Configuração do middleware CORS para permitir solicitações de qualquer origem, com qualquer método e cabeçalho.
 
 
 @app.on_event("startup")
@@ -33,3 +43,5 @@ def login(
         )
 
     return LoginResponse(authenticated=True)
+
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
