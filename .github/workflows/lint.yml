@@ -1,0 +1,24 @@
+name: Lint and Format
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Rodar Linter (Ruff Check)
+        uses: astral-sh/ruff-action@v3
+        with:
+          args: "check src"
+
+      - name: Verificar Formatação (Ruff Format)
+        uses: astral-sh/ruff-action@v3
+        with:
+          args: "format --check src"
