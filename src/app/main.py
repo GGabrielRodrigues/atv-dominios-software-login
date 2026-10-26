@@ -9,7 +9,6 @@ from app.database import get_db, initialize_database
 from app.schemas import LoginRequest, LoginResponse
 from app.security import authenticate_user
 
-
 app = FastAPI(title="Login API")
 
 app.add_middleware(
@@ -18,7 +17,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-) #Configuração do middleware CORS para permitir solicitações de qualquer origem, com qualquer método e cabeçalho.
+)  # Configuração do middleware CORS para permitir solicitações de qualquer origem, com qualquer método e cabeçalho.
 
 
 @app.on_event("startup")
@@ -28,8 +27,10 @@ def on_startup() -> None:
 
 @app.post("/login", response_model=LoginResponse)
 def login(
-    credentials: LoginRequest, #Modelo de dados recebido, email e password
-    connection: Annotated[sqlite3.Connection, Depends(get_db)], #Faz com que a função get_db seja chamada automaticamente
+    credentials: LoginRequest,  # Modelo de dados recebido, email e password
+    connection: Annotated[
+        sqlite3.Connection, Depends(get_db)
+    ],  # Faz com que a função get_db seja chamada automaticamente
 ) -> LoginResponse:
     authenticated = authenticate_user(
         connection,
@@ -43,5 +44,6 @@ def login(
         )
 
     return LoginResponse(authenticated=True)
+
 
 app.mount("/", StaticFiles(directory="static", html=True), name="static")
